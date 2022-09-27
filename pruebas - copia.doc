@@ -1,0 +1,78 @@
+
+import openpyxl
+import json
+from datetime import datetime as dt
+
+def extractHR():
+    f = open('hash-rate.json',)
+    data = json.load(f)
+    fes = []
+    hrs = []
+    for i in data['values']:
+        date_time = dt.fromtimestamp(i['x'])
+        d = date_time.strftime("%d/%m/%Y")
+        print(d, i['y'])
+        fes.append(d)
+        hrs.append(i['y'])
+    f.close()
+    return fes, hrs
+
+def extractIngresos():
+    f = open('miners-revenue.json',)
+    data = json.load(f)
+    fes = []
+    rev = []
+    for i in data['values']:
+        date_time = dt.fromtimestamp(i['x'])
+        d = date_time.strftime("%d/%m/%Y")
+        print(d, i['y'])
+        fes.append(d)
+        rev.append(i['y'])
+    f.close()
+    return fes, rev
+
+def extractPrecios():
+    f = open('market-price.json',)
+    data = json.load(f)
+    fes = []
+    pre = []
+    for i in data['values']:
+        date_time = dt.fromtimestamp(i['x'])
+        d = date_time.strftime("%d/%m/%Y")
+        print(d, i['y'])
+        fes.append(d)
+        pre.append(i['y'])
+    f.close()
+    return fes, pre
+
+def writeHR():
+    fechas, hashrates = extractHR()
+    wb = openpyxl.load_workbook('pruebas.xlsx')
+    sheet = wb['Sheet1']
+    for i in range(len(fechas)):
+        sheet.cell(row=i+2, column=5).value = fechas[i]
+        sheet.cell(row=i+2, column=6).value = hashrates[i]
+    wb.save('pruebas.xlsx')
+
+def writeRev():
+    fechas, revenues = extractIngresos()
+    wb = openpyxl.load_workbook('pruebas.xlsx')
+    sheet = wb['Sheet1']
+    for i in range(len(fechas)):
+        sheet.cell(row=i+2, column=8).value = fechas[i]
+        sheet.cell(row=i+2, column=9).value = revenues[i]
+    wb.save('pruebas.xlsx')
+
+def writePre():
+    fechas, precios = extractPrecios()
+    wb = openpyxl.load_workbook('pruebas.xlsx')
+    sheet = wb['Sheet1']
+    for i in range(len(fechas)):
+        sheet.cell(row=i+2, column=10).value = fechas[i]
+        sheet.cell(row=i+2, column=11).value = precios[i]
+    wb.save('pruebas.xlsx')
+
+writeHR()
+writeRev()
+writePre()
+
