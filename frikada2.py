@@ -96,10 +96,10 @@ def btcAtStart(bmnsn, cosas, calculosPrimerDia):
     if bmnsn[0] == 's':
         totalCapex = 2000 * cosas
     elif bmnsn[0] == 'n':
-        hardwareCost = calculosPrimerDia[5] * datos # asicprice * numterasminer * numminers
-        totalCapex = hardwareCost + calculosPrimerDia[5]
+        hardwareCost = calculosPrimerDia[5] * datos[2] * datos[1]  # asicprice * numterasminer * numminers
+        totalCapex = hardwareCost + float(datos[6]) # hardwareCost + setup costs
 
-    return totalCapex / calculosPrimerDia[2]
+    return totalCapex / calculosPrimerDia[2] # cuantos bitcoin tendrías si hubieses destinado toda tu inversión en minería a buy&hodl
 
 tenemosDatos = False
 
@@ -172,7 +172,7 @@ def buyandhodlColumn(df, bmnsn):
         x = df['bitcoin_price'].multiply(btcPrincipio)
         print("vale")
         MinedUSDTranches = 0
-    return MinedUSDTranches, btcprincipios, x
+    return MinedUSDTranches, btcPrincipio, x
 
 def mineandhodlColumn(df, bmnsn):
     x = df['date'][idInicial:idFinal]
@@ -182,12 +182,12 @@ def mineandhodlColumn(df, bmnsn):
         df['Cumulative Bitcoins'] = df['Mined'][idInicial:idFinal].cumsum()
         cols = ['Cumulative Bitcoins', 'bitcoin_price']
         df['MinedUSD'] = df.loc[:, cols].prod(axis=1)
-    # else:
-    #     df.loc[:, 'bitcoins/day'] *= (df['bitcoin_price'][idInicial:idFinal] * (terasTotales * bitcoinsMinadosHoy))
-    #     df['Mined'] = df['bitcoins/day'][idInicial:idFinal] / df['NetworkHR'][idInicial:idFinal]
-    #     df['Cumulative Bitcoins'] = df['Mined'][idInicial:idFinal].cumsum()
-    #     cols = ['Cumulative Bitcoins', 'bitcoin_price']
-    #     df['MinedUSD'] = df.loc[:, cols].prod(axis=1)
+    else:
+        df.loc[:, 'bitcoins/day'] *= (df['bitcoin_price'][idInicial:idFinal] * (terasTotales * bitcoinsMinadosHoy))
+        df['Mined'] = df['bitcoins/day'][idInicial:idFinal] / df['NetworkHR'][idInicial:idFinal]
+        df['Cumulative Bitcoins'] = df['Mined'][idInicial:idFinal].cumsum()
+        cols = ['Cumulative Bitcoins', 'bitcoin_price']
+        df['MinedUSD'] = df.loc[:, cols].prod(axis=1)
     return df['Cumulative Bitcoins'], df['Mined'], df['MinedUSD']
 
 def buildChart(opcion):
@@ -328,22 +328,6 @@ def buildChart(opcion):
         plt.legend()
         plt.show()
         plt.close('all')
-    # elif opcion == 5:
-    #     x1 = df['date'][idInicial:idFinal]
-    #     actuals, forecast = x1 <= now, x1 >= now
-    #     visible, invisible = x1 <= now, x1 <= "13/01/2022"
-    #     y1 = buy[2][idInicial:idFinal]
-    #     y2 = mine[2][idInicial:idFinal]
-    #     plt.plot(x1[actuals], y1[actuals], '-', label='buy&hodl-Actuals')
-    #     plt.plot(x1[forecast], y1[forecast], '--', label='buy&hodl-Forecast')
-    #     plt.plot(x1[actuals], y2[actuals], '-', label='mine&hodl-Actuals')
-    #     plt.plot(x1[forecast], y2[forecast], '--', label='mine&hodl-Forecast')
-    #     plt.xlabel('days running')
-    #     plt.ylabel('USD')
-    #     plt.title('Mine vs Buy in USD')
-    #     plt.legend()
-    #     plt.show()
-    #     plt.close('all')
     elif opcion == 9:
         df.to_csv('export.csv')
 
