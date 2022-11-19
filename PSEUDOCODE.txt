@@ -1,0 +1,18 @@
+- retrieve data from existing excel sheet into dataframe 1
+- retrieve data from blockchain.com or whatever other source
+- turn all that data into dataframe 2
+- identify last date from dataframe 1
+- concatenate dataframe 1 with dataframe 2 starting right after the last date
+- save to excel sheet and replace existing one
+- wait a couple of seconds
+- retrieve data from new excel sheet
+- create dataframe 3 with that data
+- create dataframe 4 where:
+- column id and date increase from last record in dataframe 3
+- add records to column networkhr where it increases according to hr1
+- add records to column networkhr where it increases according to hr2
+- add records to column networkhr where it increases according to hr3
+- same process with bitcoin price
+- we now have dataframes 3 and 4
+- paint charts with actual data from dataframe 3
+- paint charts with forecasted data from dataframe 4

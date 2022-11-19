@@ -6,6 +6,10 @@ from datetime import datetime, timedelta
 d = datetime.today() - timedelta(days=2)
 now = str(d.strftime('%Y-%m-%d'))
 
+tasaCentral = 50
+tasaPositiva = tasaCentral + 30
+tasaNegativa = tasaCentral - 30
+
 def bmnStatus():
     bmnsn = input("¿Es BMN1? s/n: ")
     hostingsn = input("Es hosting? s/n: ")
@@ -176,12 +180,33 @@ def buyandhodlColumn(df, bmnsn):
 
 def mineandhodlColumn(df, bmnsn):
     x = df['date'][idInicial:idFinal]
+    NetworkHRplus = []
+    NetworkHRcentral = []
+    NetworkHRneg = []
     if bmnsn[0] == 's':
+        NetworkHRcentral.append((df['NetworkHR'][idActual + 1]) * (((tasaCentral / 100) + 1) ** (1 / 365)))
+        for i in range(idFinal - (idActual + 1)):
+            NetworkHRcentral.append(NetworkHRcentral[i] * (((tasaCentral / 100) + 1) ** (1 / 365)))
+        NetworkHRneg.append((df['NetworkHR'][idActual + 1]) * (((tasaNegativa / 100) + 1) ** (1 / 365)))
+        for i in range(idFinal - (idActual + 1)):
+            NetworkHRneg.append(NetworkHRneg[i] * (((tasaNegativa / 100) + 1) ** (1 / 365)))
+        NetworkHRplus.append((df['NetworkHR'][idActual + 1]) * (((tasaPositiva / 100) + 1) ** (1 / 365)))
+        for i in range(idFinal - (idActual + 1)):
+            NetworkHRplus.append(NetworkHRplus[i] * (((tasaPositiva / 100) + 1) ** (1 / 365)))
+        # print(NetworkHRplus, NetworkHRneg, NetworkHRcentral)
+        # df['Central'][0:idActual] = 0
+        # df['Central'][idActual:idFinal] = pd.DataFrame(NetworkHRcentral, columns=['Central'])
+        # df['Positive'][0:idActual] = 0
+        # df['Positive'][idActual:idFinal] = pd.DataFrame(NetworkHRplus, columns=['Positive'])
+        # df['Negative'][0:idActual] = 0
+        # df['Negative'][idActual:idFinal] = pd.DataFrame(NetworkHRneg, columns=['Negative'])
         df.loc[:, 'bitcoins/day'] *= 2000
-        df['Mined'] = df['bitcoins/day'][idInicial:idFinal]/df['NetworkHR'][idInicial:idFinal]
+        df['MinedCentral'] = pd.DataFrame(NetworkHRcentral)
+        # df['Mined'] = df['bitcoins/day'][idInicial:idFinal]/df['NetworkHR'][idInicial:idFinal]
         df['Cumulative Bitcoins'] = df['Mined'][idInicial:idFinal].cumsum()
         cols = ['Cumulative Bitcoins', 'bitcoin_price']
         df['MinedUSD'] = df.loc[:, cols].prod(axis=1)
+        # print(df)
     else:
         df.loc[:, 'bitcoins/day'] *= (df['bitcoin_price'][idInicial:idFinal] * (terasTotales * bitcoinsMinadosHoy))
         df['Mined'] = df['bitcoins/day'][idInicial:idFinal] / df['NetworkHR'][idInicial:idFinal]
@@ -191,7 +216,7 @@ def mineandhodlColumn(df, bmnsn):
     return df['Cumulative Bitcoins'], df['Mined'], df['MinedUSD']
 
 def buildChart(opcion):
-    if opcion == 1:
+    if opcion == 1 or opcion == 5:
         x1 = df['date'][idInicial:idFinal]
         actuals, forecast = x1 <= now, x1 >= now
         visible, invisible = x1 <= now, x1 <= "13/01/2022"
@@ -243,12 +268,12 @@ def buildChart(opcion):
         # plt.plot(x1[actuals], y2[actuals], '-', label='hodledBTC tranche 1')
         plt.plot(x1, y2, '-', label='BTCBMN price tranche 1')
         plt.plot(x2, y3, '-', label='BMNBTC Price in SideSwap')
-        plt.plot(x1, y4, '-', label='BTCBMN price tranche 2')
-        plt.plot(x1, y5, '-', label='BTCBMN price tranche 3')
-        plt.plot(x1, y6, '-', label='BTCBMN price tranche 4')
-        plt.plot(x1, y7, '-', label='BTCBMN price tranche 5')
-        plt.plot(x1, y8, '-', label='BTCBMN price tranche 6')
-        plt.plot(x1, y9, '-', label='BTCBMN price tranche 7')
+        # plt.plot(x1, y4, '-', label='BTCBMN price tranche 2')
+        # plt.plot(x1, y5, '-', label='BTCBMN price tranche 3')
+        # plt.plot(x1, y6, '-', label='BTCBMN price tranche 4')
+        # plt.plot(x1, y7, '-', label='BTCBMN price tranche 5')
+        # plt.plot(x1, y8, '-', label='BTCBMN price tranche 6')
+        # plt.plot(x1, y9, '-', label='BTCBMN price tranche 7')
         plt.plot(x1, y10, '-', label='BTCBMN price tranche 8')
         plt.xlabel('days running')
         plt.ylabel('BTC')
@@ -287,6 +312,7 @@ def buildChart(opcion):
         plt.show()
         plt.close('all')
     elif opcion == 4:
+        print(idInicial, idFinal)
         x1 = df['date'][idInicial:idFinal]
         actuals, forecast = x1 <= now, x1 >= now
         visible, invisible = x1 <= now, x1 >= fechaInicial
@@ -294,7 +320,7 @@ def buildChart(opcion):
         y2 = mine[2][idInicial:idFinal]
         cols = ['BMN price', 'bitcoin_price']
         df['BMNUSD'] = df.loc[:, cols].prod(axis=1)
-        # y3 = df['BMNUSD'][idInicial: idFinal]
+        y3 = df['BMNUSD'][idInicial: idFinal]
         y4 = y1 # tranche 2 es igual a tranche 1
         y5 = buy[0][2][idInicial:idFinal] # tranche 3
         y6 = buy[0][3][idInicial:idFinal] # tranche 4
@@ -308,18 +334,18 @@ def buildChart(opcion):
         plt.plot(x1[forecast], y2[forecast], '--', label='mine&hodl-Forecast')
         # plt.plot(x1[visible], y3[visible], '-', label='BMNUSD Price')
         # plt.plot(x1[invisible], y3[invisible], ' ', label='')
-        plt.plot(x1[actuals], y4[actuals], '-', label='BMNBTC price tranche2')
-        plt.plot(x1[forecast], y4[forecast], '--')
-        plt.plot(x1[actuals], y5[actuals], '-', label='BMNBTC price tranche3')
-        plt.plot(x1[forecast], y5[forecast], '--')
-        plt.plot(x1[actuals], y6[actuals], '-', label='BMNBTC price tranche4')
-        plt.plot(x1[forecast], y6[forecast], '--')
-        plt.plot(x1[actuals], y7[actuals], '-', label='BMNBTC price tranche5')
-        plt.plot(x1[forecast], y7[forecast], '--')
-        plt.plot(x1[actuals], y8[actuals], '-', label='BMNBTC price tranche6')
-        plt.plot(x1[forecast], y8[forecast], '--')
-        plt.plot(x1[actuals], y9[actuals], '-', label='BMNBTC price tranche7')
-        plt.plot(x1[forecast], y9[forecast], '--')
+        # plt.plot(x1[actuals], y4[actuals], '-', label='BMNBTC price tranche2')
+        # plt.plot(x1[forecast], y4[forecast], '--')
+        # plt.plot(x1[actuals], y5[actuals], '-', label='BMNBTC price tranche3')
+        # plt.plot(x1[forecast], y5[forecast], '--')
+        # plt.plot(x1[actuals], y6[actuals], '-', label='BMNBTC price tranche4')
+        # plt.plot(x1[forecast], y6[forecast], '--')
+        # plt.plot(x1[actuals], y7[actuals], '-', label='BMNBTC price tranche5')
+        # plt.plot(x1[forecast], y7[forecast], '--')
+        # plt.plot(x1[actuals], y8[actuals], '-', label='BMNBTC price tranche6')
+        # plt.plot(x1[forecast], y8[forecast], '--')
+        # plt.plot(x1[actuals], y9[actuals], '-', label='BMNBTC price tranche7')
+        # plt.plot(x1[forecast], y9[forecast], '--')
         plt.plot(x1[actuals], y10[actuals], '-', label='BMNBTC price tranche8')
         plt.plot(x1[forecast], y10[forecast], '--')
         plt.xlabel('days running')
