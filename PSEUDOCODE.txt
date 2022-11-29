@@ -1,6 +1,9 @@
+- último status:
+    - hay que cambiar append y recomienda concat pero no sé la sintaxis y no consigo hacerlo funcionar
+    - con append intento añadir los registros extraídos de la API a los extraídos del excel y al imprimir el resultado, no me aparecen actualizados, luego algo estoy haciendo mal
 - retrieve data from existing excel sheet into dataframe 1
 - retrieve data from blockchain.com or whatever other source
-- turn all that data into dataframe 2
+- turn all that data (concatenate) into dataframe 2
 - identify last date from dataframe 1
 - concatenate dataframe 1 with dataframe 2 starting right after the last date
 - save to excel sheet and replace existing one

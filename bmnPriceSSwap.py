@@ -27,7 +27,7 @@ def extractBMN():
     for i in datos['result']['data']:
         d = datetime.datetime.strptime(i['time'], "%Y-%m-%d")
         d = d.strftime("%d-%m-%Y")
-        print(d, i['close'])
+        print(d, type(d), i['close'])
         times.append(d)
         closes.append(i['close'])
     f.close()
@@ -41,5 +41,6 @@ def writeBMN():
         sheet.cell(row=i+2, column=5).value = fechas[i]
         sheet.cell(row=i+2, column=6).value = cierres[i]
     wb.save('pruebas.xlsx')
+    return cierres, fechas
 
-writeBMN()
+bmn = writeBMN()
