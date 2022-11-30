@@ -4,13 +4,11 @@ import openpyxl
 from time import sleep
 import datetime
 
-from datetime import datetime as dt
 ws = create_connection("wss://api.sideswap.io/json-rpc-ws")
 ws.send('{"id":1, "method": "market_data_subscribe", "params": {"asset": "11f91cb5edd5d0822997ad81f068ed35002daec33986da173461a8427ac857e1"}}')
 
-# while True:
+
 result =  ws.recv()
-# print ("Received '%s'" % result)
 with open('BMN1.json', 'w') as f:
     f.write(result)
 f.close()
@@ -27,7 +25,7 @@ def extractBMN():
     for i in datos['result']['data']:
         d = datetime.datetime.strptime(i['time'], "%Y-%m-%d")
         d = d.strftime("%d-%m-%Y")
-        print(d, type(d), i['close'])
+        # print(d, type(d), i['close'])
         times.append(d)
         closes.append(i['close'])
     f.close()
@@ -44,3 +42,4 @@ def writeBMN():
     return cierres, fechas
 
 bmn = writeBMN()
+print("Todo parece haberse extraído, imprimido y grabado sin pegas")

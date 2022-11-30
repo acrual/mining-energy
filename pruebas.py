@@ -2,9 +2,7 @@ import openpyxl
 import requests
 import pandas as pd
 import json
-# from datos import *
 from datetime import datetime, timedelta
-# from datetime import datetime as dt
 
 d = datetime.today() - timedelta(days=0)
 now = str(d.strftime('%d-%m-%Y'))
@@ -48,38 +46,6 @@ def extractHR():
         pre.append(dfP['values'][i]['y'])
     return fes, hrs, rev, pre
 
-# hr = extractHR()
-#
-# def extractIngresos():
-#     fes = []
-#     rev = []
-#     df = dataframeExtract('miners-revenue')
-#     res = df['values']
-#     for i in range(len(res)):
-#         res[i]['x'] = pd.to_datetime(res[i]['x'], unit='s')
-#         d = res[i]['x'].strftime("%d-%m-%Y")
-#         fes.append(d)
-#         rev.append(df['values'][i]['y'])
-#     return fes, rev
-#
-# ingresos = extractIngresos()
-#
-# def extractPrecios():
-#     fes = []
-#     pre = []
-#     df = dataframeExtract('market-price')
-#     res = df['values']
-#     for i in range(len(res)):
-#         res[i]['x'] = pd.to_datetime(res[i]['x'], unit='s')
-#         d = res[i]['x'].strftime("%d-%m-%Y")
-#         fes.append(d)
-#         pre.append(df['values'][i]['y'])
-#     return fes, pre
-
-# precios = extractPrecios()
-
-print(now)
-# now = pd.to_datetime(now, format = "%d/%m/%Y", infer_datetime_format=True)
 def writeHR():
     fechas, hashrates = extractHR()
     wb = openpyxl.load_workbook('pruebas.xlsx')
@@ -107,7 +73,4 @@ def writePre():
         sheet.cell(row=i+2, column=11).value = precios[i]
     wb.save('pruebas.xlsx')
 
-# writeHR()
-# writeRev()
-# writePre()
 
