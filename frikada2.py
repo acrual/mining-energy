@@ -66,7 +66,7 @@ def calcularPrimerDia(bmnsn, datos):
     excel_file = pd.ExcelFile('BSMiningExperiments.xlsm')
     pd.set_option('display.float_format', lambda x: '%0.4f' % x)
     df = excel_file.parse('NetworkHR')
-    df = df.drop(df.columns[[7, 8, 9, 10, 11, 12, 13, 14]], axis=1)
+    # df = df.drop(df.columns[[7, 8, 9, 10, 11, 12, 13, 14]], axis=1)
     df.fillna(value=0, inplace=True)
     # df = df.convert_objects(convert_numeric=True)
     if bmnsn[0] == 's':
@@ -202,8 +202,8 @@ def mineandhodlColumn(df, bmnsn):
         # df['Negative'][idActual:idFinal] = pd.DataFrame(NetworkHRneg, columns=['Negative'])
         df.loc[:, 'bitcoins/day'] *= 2000
         df['MinedCentral'] = pd.DataFrame(NetworkHRcentral)
-        # df['Mined'] = df['bitcoins/day'][idInicial:idFinal]/df['NetworkHR'][idInicial:idFinal]
-        df['Cumulative Bitcoins'] = df['Mined'][idInicial:idFinal].cumsum()
+        df['mined'] = df['bitcoins/day'][idInicial:idFinal]/df['NetworkHR'][idInicial:idFinal]
+        df['Cumulative Bitcoins'] = df['mined'][idInicial:idFinal].cumsum()
         cols = ['Cumulative Bitcoins', 'bitcoin_price']
         df['MinedUSD'] = df.loc[:, cols].prod(axis=1)
         # print(df)
@@ -213,7 +213,7 @@ def mineandhodlColumn(df, bmnsn):
         df['Cumulative Bitcoins'] = df['Mined'][idInicial:idFinal].cumsum()
         cols = ['Cumulative Bitcoins', 'bitcoin_price']
         df['MinedUSD'] = df.loc[:, cols].prod(axis=1)
-    return df['Cumulative Bitcoins'], df['Mined'], df['MinedUSD']
+    return df['Cumulative Bitcoins'], df['mined'], df['MinedUSD']
 
 def buildChart(opcion):
     if opcion == 1 or opcion == 5:
@@ -245,23 +245,23 @@ def buildChart(opcion):
         x1 = df['date'][idInicial:idFinal]
         x2 = df['date'][idBMNInicial:idBMNFinal]
         actuals, forecast = x1 <= now, x1 >= now
-        df['btcStart'] = 4.7952 # buy[1][0]
+        df['btcStart'] = 4.7952 # buy[1][0] # tranche 1 superado
         y1 = mine[0][idInicial:idFinal]
-        y2 = df['btcStart'][idInicial:idFinal]
+        y2 = df['btcStart'][idInicial:idFinal] # tranche 1
         y3 = df['BMN price'][idBMNInicial:idBMNFinal]
         df['btcStart'] = 6.9758 # buy[1][1]
         y4 = df['btcStart'][idInicial:idFinal] # tranche 2
         df['btcStart'] = 5.9525 # buy[1][2]
         y5 = df['btcStart'][idInicial:idFinal]  # tranche 3
-        df['btcStart'] = 5.0356 # buy[1][3]
+        df['btcStart'] = 5.0356 # buy[1][3] # tranche 4 superado
         y6 = df['btcStart'][idInicial:idFinal]  # tranche 4
-        df['btcStart'] = 4.8762 # buy[1][4]
+        df['btcStart'] = 4.8762 # buy[1][4] # tranche 5 superado
         y7 = df['btcStart'][idInicial:idFinal]  # tranche 5
-        df['btcStart'] = 5.2808 # buy[1][5]
+        df['btcStart'] = 5.2808 # buy[1][5] # tranche 6 superado
         y8 = df['btcStart'][idInicial:idFinal]  # tranche 6
-        df['btcStart'] = 5.7708 # buy[1][6]
+        df['btcStart'] = 5.7708 # buy[1][6] # tranche 7 NO SUPERADO
         y9 = df['btcStart'][idInicial:idFinal]  # tranche 7
-        df['btcStart'] = 8.1394 # buy[1][7]
+        df['btcStart'] = 8.1394 # buy[1][7] # NO SUPERADO
         y10 = df['btcStart'][idInicial:idFinal]  # tranche 8
         plt.plot(x1[actuals], y1[actuals], '-', label='AccumulatedBTC-Actuals')
         plt.plot(x1[forecast], y1[forecast], '--', label='Accumulated-Forecast')
@@ -270,10 +270,10 @@ def buildChart(opcion):
         plt.plot(x2, y3, '-', label='BMNBTC Price in SideSwap')
         # plt.plot(x1, y4, '-', label='BTCBMN price tranche 2')
         # plt.plot(x1, y5, '-', label='BTCBMN price tranche 3')
-        # plt.plot(x1, y6, '-', label='BTCBMN price tranche 4')
-        # plt.plot(x1, y7, '-', label='BTCBMN price tranche 5')
-        # plt.plot(x1, y8, '-', label='BTCBMN price tranche 6')
-        # plt.plot(x1, y9, '-', label='BTCBMN price tranche 7')
+        plt.plot(x1, y6, '-', label='BTCBMN price tranche 4')
+        plt.plot(x1, y7, '-', label='BTCBMN price tranche 5')
+        plt.plot(x1, y8, '-', label='BTCBMN price tranche 6')
+        plt.plot(x1, y9, '-', label='BTCBMN price tranche 7')
         plt.plot(x1, y10, '-', label='BTCBMN price tranche 8')
         plt.xlabel('days running')
         plt.ylabel('BTC')

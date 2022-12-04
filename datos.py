@@ -46,7 +46,7 @@ precioBMNPrimerDia = float((df2.query("date == @fechaInicial"))['BMN price'].to_
 priceInicial = float((df2.query("date == @fechaInicial"))['bitcoin_price'].to_string(index=False))
 bitcoinsDiaRed = float((df2.query("date == @fechaInicial"))['bitcoins/day'].to_string(index=False))
 asicPrimerDia = float((df2.query("date == @fechaInicial"))['AsicPrice'].to_string(index=False))
-idHalving2024 = int((pd.to_datetime(fechaHalving2024, format='%d-%m-%Y') - pd.to_datetime(now, format='%d-%m-%Y')) / pd.Timedelta(days=1))
+idHalving2024 = int((pd.to_datetime(fechaHalving2024, format='%d-%m-%Y', infer_datetime_format=True) - pd.to_datetime(now, format='%d-%m-%Y', infer_datetime_format=True)) / pd.Timedelta(days=1))
 print("idhalving es: ", idHalving2024, type(idHalving2024))
 costesTh = [100, 100, 120, 125, 130, 145, 160, 135]
 preciosTrancheBTC = [4.7952, 6.9758, 5.9525, 5.0356, 4.8762, 5.2808, 5.7708, 8.1394]
@@ -61,7 +61,7 @@ ultimaFecha = df2.iloc[-15:]
 bd = []
 hr = extractHR()
 for i in range(len(hr[0])):
-    hr[0][i] = pd.to_datetime(hr[0][i], format='%d-%m-%Y')
+    hr[0][i] = pd.to_datetime(hr[0][i], format='%d-%m-%Y', infer_datetime_format=True)
     bd.append(hr[2][i] / hr[3][i])
     if hr[0][i] > df2['date'].iloc[-1]:
         row = pd.DataFrame({'id': df2['id'].iloc[-1]+1, 'date': hr[0][i], 'NetworkHR': hr[1][i], 'bitcoins/day': bd[i],'bitcoin_price': hr[3][i], 'BMN price': bmn[0][-len(hr[3]):][i], 'AsicPrice': [21]})
