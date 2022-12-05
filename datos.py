@@ -8,7 +8,6 @@ def extraerDatos(que):
     excel_file = pd.ExcelFile(que)
     pd.set_option('display.float_format', lambda x: '%0.4f' % x)
     df2 = excel_file.parse('NetworkHR')
-    # df2 = df2.drop(df2.columns[[7, 8, 9, 10, 11, 12, 13, 14]], axis=1)
     df2.fillna(value=0, inplace=True)
     return df2
 

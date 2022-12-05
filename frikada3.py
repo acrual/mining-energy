@@ -16,6 +16,15 @@ else:
 
 idActual = df2['id'].iloc[-1]
 idBMNfinal = desde + (3 * 365)
+idTranche1 = 4471
+idTranche2 = 4542
+idTranche3 = 4634
+idTranche4 = 4661
+idTranche5 = 4665
+idTranche6 = 4667
+idTranche7 = 4690
+idTranche8 = 4756
+
 
 def addRows(bmn, ppio, fin, tasa, df2):
     if bmn == "bmnsi":
@@ -65,14 +74,14 @@ def addMoreRows(df3):
     df3['buy6']= preciosTrancheBTC[5]
     df3['buy7']= preciosTrancheBTC[6]
     df3['buy8']= preciosTrancheBTC[7]
-    df3['buy1USD'] = df3['bitcoin_price'].multiply(preciosTrancheUSDenBTC[0])
-    df3['buy2USD'] = df3['bitcoin_price'].multiply(preciosTrancheUSDenBTC[1])
-    df3['buy3USD'] = df3['bitcoin_price'].multiply(preciosTrancheUSDenBTC[2])
-    df3['buy4USD'] = df3['bitcoin_price'].multiply(preciosTrancheUSDenBTC[3])
-    df3['buy5USD'] = df3['bitcoin_price'].multiply(preciosTrancheUSDenBTC[4])
-    df3['buy6USD'] = df3['bitcoin_price'].multiply(preciosTrancheUSDenBTC[5])
-    df3['buy7USD'] = df3['bitcoin_price'].multiply(preciosTrancheUSDenBTC[6])
-    df3['buy8USD'] = df3['bitcoin_price'].multiply(preciosTrancheUSDenBTC[7])
+    df3['buy1USD'] = df3['bitcoin_price'][idTranche1:].multiply(preciosTrancheUSDenBTC[0])
+    df3['buy2USD'] = df3['bitcoin_price'][idTranche2:].multiply(preciosTrancheUSDenBTC[1])
+    df3['buy3USD'] = df3['bitcoin_price'][idTranche3:].multiply(preciosTrancheUSDenBTC[2])
+    df3['buy4USD'] = df3['bitcoin_price'][idTranche4:].multiply(preciosTrancheUSDenBTC[3])
+    df3['buy5USD'] = df3['bitcoin_price'][idTranche5:].multiply(preciosTrancheUSDenBTC[4])
+    df3['buy6USD'] = df3['bitcoin_price'][idTranche6:].multiply(preciosTrancheUSDenBTC[5])
+    df3['buy7USD'] = df3['bitcoin_price'][idTranche7:].multiply(preciosTrancheUSDenBTC[6])
+    df3['buy8USD'] = df3['bitcoin_price'][idTranche8:].multiply(preciosTrancheUSDenBTC[7])
     return df3
 
 df4 = addMoreRows(df3)
@@ -81,7 +90,7 @@ print(df4[['id', 'date', 'NetworkHR', 'NetworkHRPos', 'NetworkHRNeg', 'bitcoins/
 print(df4[['id', 'date', 'NetworkHR', 'NetworkHRPos', 'NetworkHRNeg', 'bitcoins/day', 'bitcoin_price', 'mined', 'minedP', 'minedN', 'accMined', 'accMinedP', 'accMinedN']][idBMNfinal - 10:idBMNfinal+3])
 print(df4[['id', 'date', 'NetworkHR', 'NetworkHRPos', 'NetworkHRNeg', 'bitcoins/day', 'bitcoin_price', 'mined', 'minedP', 'minedN', 'accMined', 'accMinedP', 'accMinedN']][-10:])
 print(df4[['id', 'date', 'NetworkHR', 'NetworkHRPos', 'NetworkHRNeg', 'bitcoins/day', 'bitcoin_price', 'mined', 'minedP', 'minedN', 'accMined', 'accMinedP', 'accMinedN']][idActual - 10:idActual+40])
-
+print(df4[['id', 'date', 'bitcoin_price', 'accMined', 'buy1USD']][4530:4570])
 def chartIt(idBMNfinal):
     x1 = df4['date'][idInicial:idActual]
     x2 = df4['date'][idActual:idBMNfinal]
@@ -89,6 +98,12 @@ def chartIt(idBMNfinal):
     actuals, forecast = x1 <= now, x1 > now
     y1 = df4['buy1'][idInicial:idActual]
     y12 = df4['buy1'][idActual:idBMNfinal]
+    y13 = df4['buy4'][idInicial:idActual]
+    y14 = df4['buy4'][idActual:idBMNfinal]
+    y15 = df4['buy5'][idInicial:idActual]
+    y16 = df4['buy5'][idActual:idBMNfinal]
+    y17 = df4['buy6'][idInicial:idActual]
+    y18 = df4['buy6'][idActual:idBMNfinal]
     y2 = df4['accMined'][idInicial:idActual]
     y22 = df4['accMined'][idActual:idBMNfinal]
     y3 = df4['accMinedP'][idActual:idBMNfinal]
@@ -96,6 +111,12 @@ def chartIt(idBMNfinal):
     y5 = df4['BMN price'][idBMNInicial:idActual]
     plt.plot(x1, y1, '-', label='BTC/BMN price of Tranche 1')
     plt.plot(x2, y12, '--')
+    plt.plot(x1, y13, '-', label='BTC/BMN price of Tranche 4')
+    plt.plot(x2, y14, '--')
+    plt.plot(x1, y15, '-', label='BTC/BMN price of Tranche 5')
+    plt.plot(x2, y16, '--')
+    plt.plot(x1, y17, '-', label='BTC/BMN price of Tranche 6')
+    plt.plot(x2, y18, '--')
     plt.plot(x1, y2, '-', label='Cumulative BTC')
     plt.plot(x2, y22, '--', label='Cumulative BTC Forecast '+str(tasaCentral)+'% hashrate increase')
     plt.plot(x2, y3, '--', label='Cumulative BTC Forecast '+str(tasaPositiva)+'% hashrate increase')
@@ -116,13 +137,25 @@ def chartIt2(idBMNfinal):
     actuals, forecast = x1 <= now, x1 > now
     y1 = df4['buy1USD'][idInicial:idActual]
     y12 = df4['buy1USD'][idActual:idBMNfinal]
+    y13 = df4['buy4USD'][idInicial:idActual]
+    y14 = df4['buy4USD'][idActual:idBMNfinal]
+    y15 = df4['buy5USD'][idInicial:idActual]
+    y16 = df4['buy5USD'][idActual:idBMNfinal]
+    y17 = df4['buy6USD'][idInicial:idActual]
+    y18 = df4['buy6USD'][idActual:idBMNfinal]
     y2 = df4['accMined'][idInicial:idActual] * df4['bitcoin_price'][idInicial:idActual]
     y22 = df4['accMined'][idActual:idBMNfinal] * df4['bitcoin_price'][idActual:idBMNfinal]
     y3 = df4['accMinedP'][idActual:idBMNfinal] * df4['bitcoin_price'][idActual:idBMNfinal]
     y4 = df4['accMinedN'][idActual:idBMNfinal] * df4['bitcoin_price'][idActual:idBMNfinal]
-    y5 = df4['BMN price'][idBMNInicial:idActual] * df4['bitcoin_price'][idActual:idBMNfinal]
+    y5 = df4['BMN price'][idBMNInicial:idActual] * df4['bitcoin_price'][idBMNInicial:idActual]
     plt.plot(x1, y1, '-', label='BMN/USD price of Tranche 1')
     plt.plot(x2, y12, '--')
+    plt.plot(x1, y13, '-', label='BMN/USD price of Tranche 4')
+    plt.plot(x2, y14, '--')
+    plt.plot(x1, y15, '-', label='BMN/USD price of Tranche 5')
+    plt.plot(x2, y16, '--')
+    plt.plot(x1, y17, '-', label='BMN/USD price of Tranche 6')
+    plt.plot(x2, y18, '--')
     plt.plot(x1, y2, '-', label='Cumulative USD')
     plt.plot(x2, y22, '--', label='Cumulative USD Forecast '+str(tasaCentral)+'% price&hashrate increases')
     plt.plot(x2, y3, '--', label='Cumulative USD Forecast '+str(tasaPositiva)+'% price&hashrate increases')
