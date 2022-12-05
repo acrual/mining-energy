@@ -85,6 +85,7 @@ print(df4[['id', 'date', 'NetworkHR', 'NetworkHRPos', 'NetworkHRNeg', 'bitcoins/
 def chartIt(idBMNfinal):
     x1 = df4['date'][idInicial:idActual]
     x2 = df4['date'][idActual:idBMNfinal]
+    x3 = df4['date'][idBMNInicial:idActual]
     actuals, forecast = x1 <= now, x1 > now
     y1 = df4['buy1'][idInicial:idActual]
     y12 = df4['buy1'][idActual:idBMNfinal]
@@ -92,17 +93,48 @@ def chartIt(idBMNfinal):
     y22 = df4['accMined'][idActual:idBMNfinal]
     y3 = df4['accMinedP'][idActual:idBMNfinal]
     y4 = df4['accMinedN'][idActual:idBMNfinal]
-    plt.plot(x1, y1, '-', label='bitcoin held from 1st tranche')
+    y5 = df4['BMN price'][idBMNInicial:idActual]
+    plt.plot(x1, y1, '-', label='BTC/BMN price of Tranche 1')
     plt.plot(x2, y12, '--')
-    plt.plot(x1, y2, '-', label='mined actuals')
-    plt.plot(x2, y22, '--', label='mined forecast central')
-    plt.plot(x2, y3, '--', label='mined forecast alto')
-    plt.plot(x2, y4, '--', label='mined forecast bajo')
+    plt.plot(x1, y2, '-', label='Cumulative BTC')
+    plt.plot(x2, y22, '--', label='Cumulative BTC Forecast '+str(tasaCentral)+'% hashrate increase')
+    plt.plot(x2, y3, '--', label='Cumulative BTC Forecast '+str(tasaPositiva)+'% hashrate increase')
+    plt.plot(x2, y4, '--', label='Cumulative BTC Forecast '+str(tasaNegativa)+'% hashrate increase')
+    plt.plot(x3, y5, '-', label='BMN/BTC price in SideSwap')
     plt.xlabel('days running')
     plt.ylabel('BTC')
     plt.title('Mine vs Buy for BMN in BTC')
     plt.legend()
+    plt.savefig('chart' + now + '.png')
     plt.show()
     plt.close('all')
+
+def chartIt2(idBMNfinal):
+    x1 = df4['date'][idInicial:idActual]
+    x2 = df4['date'][idActual:idBMNfinal]
+    x3 = df4['date'][idBMNInicial:idActual]
+    actuals, forecast = x1 <= now, x1 > now
+    y1 = df4['buy1USD'][idInicial:idActual]
+    y12 = df4['buy1USD'][idActual:idBMNfinal]
+    y2 = df4['accMined'][idInicial:idActual] * df4['bitcoin_price'][idInicial:idActual]
+    y22 = df4['accMined'][idActual:idBMNfinal] * df4['bitcoin_price'][idActual:idBMNfinal]
+    y3 = df4['accMinedP'][idActual:idBMNfinal] * df4['bitcoin_price'][idActual:idBMNfinal]
+    y4 = df4['accMinedN'][idActual:idBMNfinal] * df4['bitcoin_price'][idActual:idBMNfinal]
+    y5 = df4['BMN price'][idBMNInicial:idActual] * df4['bitcoin_price'][idActual:idBMNfinal]
+    plt.plot(x1, y1, '-', label='BMN/USD price of Tranche 1')
+    plt.plot(x2, y12, '--')
+    plt.plot(x1, y2, '-', label='Cumulative USD')
+    plt.plot(x2, y22, '--', label='Cumulative USD Forecast '+str(tasaCentral)+'% price&hashrate increases')
+    plt.plot(x2, y3, '--', label='Cumulative USD Forecast '+str(tasaPositiva)+'% price&hashrate increases')
+    plt.plot(x2, y4, '--', label='Cumulative USD Forecast '+str(tasaNegativa)+'% price&hashrate increases')
+    plt.plot(x3, y5, '-', label='BMNUSD price in SideSwap')
+    plt.xlabel('days running')
+    plt.ylabel('USD')
+    plt.title('Mine vs Buy for BMN in USD')
+    plt.legend()
+    plt.savefig('chartUSD' + now + '.png')
+    plt.show()
+    plt.close('all')
+
 chartIt(idBMNfinal)
-plt.savefig('chart'+now+'.png')
+chartIt2(idBMNfinal)
