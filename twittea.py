@@ -15,6 +15,9 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 media = api.media_upload(filename="/mnt/c/Users/acont/Documents/Blockstream/BMN/Energía/chart"+now+".png")
+media2 = api.media_upload(filename="/mnt/c/Users/acont/Documents/Blockstream/BMN/Energía/chartUSD"+now+".png")
+print(media.media_id_string)
+print(media2.media_id_string)
 texts = []
 tweets = []
 text = " "
@@ -27,12 +30,16 @@ while text != "":
 
 for i in range(len(texts)):
     if i == 0:
-        reply = api.update_status(status=texts[i], media_ids= [media.media_id_string],
-        auto_populate_reply_metadata=True)
+        reply = api.update_status(status=texts[i], media_ids=[media.media_id_string], auto_populate_reply_metadata=True)
         tweets.append(reply)
+        print("posteado el tweet 1")
+    elif i == 1:
+        reply = api.update_status(status=texts[i], media_ids=[media2.media_id_string], in_reply_to_status_id=tweets[i-1].id, auto_populate_reply_metadata=True)
+        tweets.append(reply)
+        print("posteado el tweet 2")
     else:
-        reply = api.update_status(status=texts[i], media_ids= [media.media_id_string],
-        in_reply_to_status_id=tweets[i - 1].id, auto_populate_reply_metadata=True)
+        reply = api.update_status(status=texts[i], in_reply_to_status_id=tweets[i - 1].id, auto_populate_reply_metadata=True)
         tweets.append(reply)
+        print("posteado el tweet 3")
 
 print("Gracias por usar este servicio tan espectacular")
