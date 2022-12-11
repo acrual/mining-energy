@@ -66,5 +66,5 @@ for i in range(len(hr[0])):
         row = pd.DataFrame({'id': df2['id'].iloc[-1]+1, 'date': hr[0][i], 'NetworkHR': hr[1][i], 'bitcoins/day': bd[i],'bitcoin_price': hr[3][i], 'BMN price': bmn[0][-len(hr[3]):][i], 'AsicPrice': [21]})
         df2 = pd.concat([df2, row], ignore_index=True)
 
-print(df2.iloc[-30:])
+# print(df2.iloc[-30:])
 df2.to_excel("DatosExcelMineria"+now+".xlsx", sheet_name="NetworkHR", index=False)
