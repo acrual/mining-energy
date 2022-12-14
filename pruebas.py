@@ -5,7 +5,7 @@ import json
 from datetime import datetime, timedelta
 
 d = datetime.today() - timedelta(days=0)
-now = str(d.strftime('%d-%m-%Y'))
+now = str(d.strftime('%d-%m-%Y')
 
 def dataframeExtract(que):
     url = 'https://api.blockchain.info/charts/'
