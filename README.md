@@ -10,13 +10,14 @@ It consists of a series of python scripts that download some data, store it in e
 
 Next is an explanation of what each file is doing:
 
-### pruebas.py
+### pruebas.py and BMNsideswap.py
 
 The data it needs to feed into the model is:
 
 - Extract the network's hashrate up to the last date. I do this in pruebas.py extracting it from blockchain.com's API
 - Extract bitcoin's price in USD also up to the last date. I also do it in pruebas.py extracting it from the same site
 - Extract miner's revenue, in the same file and the same site, which then will allow me to calculate how many bitcoin's were generated in the past days.
+- Retrieve BMN price from SideSwap's API using bmnsideswap.py
 
 In this file, in one of the functions I return a dataframe that contains all this data
 
