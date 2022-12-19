@@ -57,6 +57,10 @@ This is were the project starts becoming a bit interactive.
 twittea.py allows me to run all previous files, and then post the several charts to a test twitter account I have created (@mulokotests)
 responseBot.py uses the addRowsCustom and addMoreRowsCustom functions as well as a new chartIt3 function, to respond to any tweet that would request a chart using the hashrate and price parameters for the expected evolution of the network's hashrate and bitcoin's price
 
+## Way to run it
+
+Currently the best way to run this is by running frikada3.py and create all charts for today. Then after that, once those charts are ready, you can either twittea.py to post them on the @mulokoTests twitter account, or responseBot.py if you want to reply to requests to @mulokoTests with a customized chart.
+
 ## What this project is missing
 
 ### Hosting
